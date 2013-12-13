@@ -1,0 +1,8 @@
+﻿div.form-container { margin: 5px 10px; }
+fieldset.form-container { width: 460px; }
+
+.form-item { width: 450px; margin: 2px; }
+.form-item-name { display: inline-block; width: 180px; margin: 5px; text-align: right; vertical-align: top;  }
+.form-item-value { display: inline-block; width: 240px; margin: 5px; vertical-align: top; }
+
+.error-message { color: #FF0000; }

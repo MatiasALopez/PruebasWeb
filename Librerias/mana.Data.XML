@@ -1,0 +1,632 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>mana.Data</name>
+    </assembly>
+    <members>
+        <member name="T:mana.Data.Azure.Queues.GenericQueue`1">
+            <summary>
+            Exposes main queue operations using an Azure Queue.
+            </summary>
+            <typeparam name="T">Object type that the queue will handles.</typeparam>
+        </member>
+        <member name="M:mana.Data.Azure.Queues.GenericQueue`1.#ctor(Microsoft.WindowsAzure.CloudStorageAccount,System.String)">
+            <summary>
+            Initializes a GenericQueue instance.
+            </summary>
+            <param name="account">Targeted Cloud Storage Account.</param>
+            <param name="name">Azure Queue name.</param>
+        </member>
+        <member name="M:mana.Data.Azure.Queues.GenericQueue`1.Enqueue(`0)">
+            <summary>
+            Enqueues an object into the queue.
+            </summary>
+            <param name="obj">Object to enqueue.</param>
+        </member>
+        <member name="M:mana.Data.Azure.Queues.GenericQueue`1.Enqueue(`0,System.TimeSpan)">
+            <summary>
+            Enqueues an object into the queue with the specified time to live.
+            </summary>
+            <param name="obj">Object to enqueue.</param>
+            <param name="timeToLive">Time for the object to live in the queue.</param>
+        </member>
+        <member name="M:mana.Data.Azure.Queues.GenericQueue`1.Enqueue(System.Collections.Generic.IEnumerable{`0})">
+            <summary>
+            Enqueues a list of objects into the queue.
+            </summary>
+            <param name="objs">List of object to enqueue.</param>
+        </member>
+        <member name="M:mana.Data.Azure.Queues.GenericQueue`1.Enqueue(System.Collections.Generic.IEnumerable{`0},System.TimeSpan)">
+            <summary>
+            Enqueues a list of objects into the queue with the specified time to live.
+            </summary>
+            <param name="objs">List of object to enqueue.</param>
+            <param name="timeToLive">Time for every object to live in the queue.</param>
+        </member>
+        <member name="M:mana.Data.Azure.Queues.GenericQueue`1.BeginDequeue(mana.Data.Azure.Queues.DequeueReceipt@)">
+            <summary>
+            Dequeues an object from the queue. This is the first part of the "Dequeue" process. MUST be followed by "EndDequeue" method to complete the process after processing the dequeued object.
+            </summary>
+            <param name="receipt">Dequeue receipt needed to end the "Dequeue" process.</param>
+            <returns>Returns the dequeued object.</returns>
+        </member>
+        <member name="M:mana.Data.Azure.Queues.GenericQueue`1.BeginDequeue(System.TimeSpan,mana.Data.Azure.Queues.DequeueReceipt@)">
+            <summary>
+            Dequeues an object from the queue. This is the first part of the "Dequeue" process. MUST be followed by "EndDequeue" method to complete the process after processing the dequeued object.
+            </summary>
+            <param name="visibilityTimeout">Visibility timeout for dequeueing the object.</param>
+            <param name="receipt">Dequeue receipt needed to end the "Dequeue" process.</param>
+            <returns>Returns the dequeued object.</returns>
+        </member>
+        <member name="M:mana.Data.Azure.Queues.GenericQueue`1.EndDequeue(mana.Data.Azure.Queues.DequeueReceipt)">
+            <summary>
+            Deletes the dequeued object from the queue. This is the second part of the "Dequeue" process. MUST follow "BeginDequeue" method to complete the process.
+            </summary>
+            <param name="receipt">The dequeue receipt obtained from the "BeginDequeue" method.</param>
+        </member>
+        <member name="M:mana.Data.Azure.Queues.GenericQueue`1.GetMessageFromObj(`0)">
+            <summary>
+            Gets the message string to enqueue from the specified object.
+            </summary>
+            <param name="obj">Object to enqueue.</param>
+            <returns></returns>
+        </member>
+        <member name="M:mana.Data.Azure.Queues.GenericQueue`1.GetObjFromMessage(Microsoft.WindowsAzure.StorageClient.CloudQueueMessage)">
+            <summary>
+            Gets the object from the message string.
+            </summary>
+            <param name="message">Queue message.</param>
+            <returns></returns>
+        </member>
+        <member name="M:mana.Data.Azure.Queues.GenericQueue`1.IsPoisonMessage(Microsoft.WindowsAzure.StorageClient.CloudQueueMessage)">
+            <summary>
+            Indicates whether the message is considered a poison message or not. (The queue will automatically consider a message with a "DequeueCount" greater than 4 as poisoned).
+            </summary>
+            <param name="message">Queue message.</param>
+            <returns></returns>
+        </member>
+        <member name="E:mana.Data.Azure.Queues.GenericQueue`1.PoisonMessageFound">
+            <summary>
+            Raised when a poison message is found. (The poison message will be automatically deleted from the queue).
+            </summary>
+        </member>
+        <member name="P:mana.Data.Azure.Queues.GenericQueue`1.QueueName">
+            <summary>
+            Gets the Azure Queue name.
+            </summary>
+        </member>
+        <member name="P:mana.Data.Azure.Queues.GenericQueue`1.AzureQueue">
+            <summary>
+            Gets a reference to the internal Cloud Queue.
+            </summary>
+        </member>
+        <member name="P:mana.Data.Azure.Queues.GenericQueue`1.Account">
+            <summary>
+            Gets the targeted Cloud Storage Account.
+            </summary>
+        </member>
+        <member name="P:mana.Data.Azure.Queues.GenericQueue`1.Processor">
+            <summary>
+            Azure Queue processor.
+            </summary>
+        </member>
+        <member name="T:mana.Data.Azure.Queues.DequeueReceipt">
+            <summary>
+            Queue dequeue receipt.
+            </summary>
+        </member>
+        <member name="T:mana.Data.Azure.Queues.GenericQueueProcessor`1">
+            <summary>
+            Exposes operations to process a GenericQueue.
+            </summary>
+            <typeparam name="T">Object type that the processor (and queue) handles.</typeparam>
+        </member>
+        <member name="M:mana.Data.Azure.Queues.GenericQueueProcessor`1.Start">
+            <summary>
+            Starts the processing logic. By default, it specifies the following intervals: "IntervalOnProcessing = 1", "IntervalOnEmptyQueue = 60000", "IntervalOnError = 1000".
+            </summary>
+        </member>
+        <member name="M:mana.Data.Azure.Queues.GenericQueueProcessor`1.Start(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Starts the processing logic.
+            </summary>
+            <param name="intervalOnProcessing">Wait interval when processing.</param>
+            <param name="intervalOnEmptyQueue">Wait interval when the queue is empty.</param>
+            <param name="intervalOnError">Wait interval when an error is found while processing.</param>
+        </member>
+        <member name="M:mana.Data.Azure.Queues.GenericQueueProcessor`1.Stop">
+            <summary>
+            Stops the processing logic.
+            </summary>
+        </member>
+        <member name="E:mana.Data.Azure.Queues.GenericQueueProcessor`1.Processing">
+            <summary>
+            Raised when an object is dequeued from the Queue to be processed.
+            </summary>
+        </member>
+        <member name="E:mana.Data.Azure.Queues.GenericQueueProcessor`1.Error">
+            <summary>
+            Raised when the processing process throws an error.
+            </summary>
+        </member>
+        <member name="P:mana.Data.Azure.Queues.GenericQueueProcessor`1.Queue">
+            <summary>
+            Gets a reference to the Generic Queue handled by this processor.
+            </summary>
+        </member>
+        <member name="P:mana.Data.Azure.Queues.GenericQueueProcessor`1.IntervalOnProcessing">
+            <summary>
+            Gets or sets the wait interval when processing.
+            </summary>
+        </member>
+        <member name="P:mana.Data.Azure.Queues.GenericQueueProcessor`1.IntervalOnEmptyQueue">
+            <summary>
+            Gets or sets the wait interval when the queue is empty.
+            </summary>
+        </member>
+        <member name="P:mana.Data.Azure.Queues.GenericQueueProcessor`1.IntervalOnError">
+            <summary>
+            Gets or sets the wait interval when an error is found while processing.
+            </summary>
+        </member>
+        <member name="P:mana.Data.Azure.Queues.GenericQueueProcessor`1.IsRunning">
+            <summary>
+            Indicates whether the processor is running or not.
+            </summary>
+        </member>
+        <member name="P:mana.Data.Azure.Queues.GenericQueueProcessor`1.MessageVisibilityTimeout">
+            <summary>
+            Gets or sets the Queue messages' visibility timeout for dequeueing.
+            </summary>
+        </member>
+        <member name="T:mana.Data.Azure.Tables.TableManager">
+            <summary>
+            Defines Tables operations to apply to the Azure Table Storage.
+            </summary>
+        </member>
+        <member name="M:mana.Data.Azure.Tables.TableManager.#ctor(Microsoft.WindowsAzure.CloudStorageAccount)">
+            <summary>
+            Initializes an instance of the TableManager with the targeted Cloud Storage Account.
+            </summary>
+            <param name="account"></param>
+        </member>
+        <member name="M:mana.Data.Azure.Tables.TableManager.Add(System.String)">
+            <summary>
+            Adds an Azure Table with the specified name (if not exists).
+            </summary>
+            <param name="tableName">Table name to add.</param>
+            <returns>Returns a boolean indicating whether the Azure Table was added or not.</returns>
+        </member>
+        <member name="M:mana.Data.Azure.Tables.TableManager.Delete(System.String)">
+            <summary>
+            Deletes the specified Azure Table (if exists).
+            </summary>
+            <param name="tableName">Table name to delete.</param>
+            <returns>Returns a boolean indicating whether the Azure Table was added or not.</returns>
+        </member>
+        <member name="M:mana.Data.Azure.Tables.TableManager.Exists(System.String)">
+            <summary>
+            Indicates whether the specified Azure Table exists.
+            </summary>
+            <param name="tableName">Table name to check.</param>
+            <returns>Returns a boolean indicating whether the Azure Table exists or not.</returns>
+        </member>
+        <member name="M:mana.Data.Azure.Tables.TableManager.GetNames">
+            <summary>
+            Gets all the Azure Tables names in the Azure Table Storage.
+            </summary>
+            <returns>Returns the existing Azure Tables names.</returns>
+        </member>
+        <member name="M:mana.Data.Azure.Tables.TableManager.GetNames(System.String)">
+            <summary>
+            Gets all the Azure Tables names in the Azure Table Storage that starts with the specified name prefix.
+            </summary>
+            <param name="tableNamePrefix"></param>
+            <returns>Returns the existing Azure Tables names that starts with the specified name prefix.</returns>
+        </member>
+        <member name="P:mana.Data.Azure.Tables.TableManager.TableClient">
+            <summary>
+            Azure Table Client.
+            </summary>
+        </member>
+        <member name="T:mana.Data.Azure.Tables.TableModel">
+            <summary>
+            Represents a complete Model of Azure Tables.
+            </summary>
+        </member>
+        <member name="M:mana.Data.Azure.Tables.TableModel.#ctor(Microsoft.WindowsAzure.CloudStorageAccount)">
+            <summary>
+            Initializes an instance of the TableModel with the targeted Cloud Storage Account.
+            </summary>
+            <param name="account"></param>
+        </member>
+        <member name="M:mana.Data.Azure.Tables.TableModel.Synchronize">
+            <summary>
+            Apply this model to the Storage Account. By default, it preserves the Azure Tables not present in this model on Storage Account.
+            </summary>
+        </member>
+        <member name="M:mana.Data.Azure.Tables.TableModel.Synchronize(mana.Data.Azure.Tables.TablesModelSynchronizationOption)">
+            <summary>
+            Apply this model to the Storage Account with the specified synchronization option. 
+            </summary>
+            <param name="option">Specifies if the Azure Tables on Storage will be preserved or deleted if it does not exist on this model.</param>
+        </member>
+        <member name="P:mana.Data.Azure.Tables.TableModel.TableNames">
+            <summary>
+            Model's Azure Table names.
+            </summary>
+        </member>
+        <member name="T:mana.Data.Azure.Tables.GenericTableContext`1">
+            <summary>
+            Exposes all kinds of entities operations to execute against an Azure Table.
+            </summary>
+            <typeparam name="T">Type of entities that this context will handle.</typeparam>
+        </member>
+        <member name="M:mana.Data.Azure.Tables.GenericTableContext`1.#ctor(Microsoft.WindowsAzure.CloudStorageAccount)">
+            <summary>
+            Initializes a new instance of GenericTableContext targeting a Cloud Storage Account.
+            </summary>
+            <param name="account">Target Cloud Storage Account.</param>
+        </member>
+        <member name="M:mana.Data.Azure.Tables.GenericTableContext`1.#ctor(Microsoft.WindowsAzure.CloudStorageAccount,System.String)">
+            <summary>
+            Initializes a new instance of GenericTableContext targeting a Cloud Storage Account and with a specified Azure Table name.
+            </summary>
+            <param name="account">Target Cloud Storage Account.</param>
+            <param name="entitySetName">Azure table name.</param>
+        </member>
+        <member name="M:mana.Data.Azure.Tables.GenericTableContext`1.Add(`0)">
+            <summary>
+            Adds the specified entity to the Azure Table.
+            </summary>
+            <param name="entity"></param>
+        </member>
+        <member name="M:mana.Data.Azure.Tables.GenericTableContext`1.AddInBatch(System.Collections.Generic.IEnumerable{`0})">
+            <summary>
+            Adds the specified entities to the Azure Table in batch. It groups entities by PartitionKey acording to the BatchSize specified.
+            </summary>
+            <param name="entities"></param>
+        </member>
+        <member name="M:mana.Data.Azure.Tables.GenericTableContext`1.Get(System.String,System.String)">
+            <summary>
+            Gets an entity with the specified PartitionKey and RowKey.
+            </summary>
+            <param name="partitionKey">Entity's Partition Key.</param>
+            <param name="rowKey">Entity's Row Key.</param>
+            <returns>Returns the entity with the specified PartitionKey and RowKey.</returns>
+        </member>
+        <member name="M:mana.Data.Azure.Tables.GenericTableContext`1.Get``1(System.Linq.IQueryable{``0})">
+            <summary>
+            Gets the results of the specified query.
+            </summary>
+            <typeparam name="TResult">Result type that the query returns.</typeparam>
+            <param name="query">Query to execute.</param>
+            <returns>Returns the query results.</returns>
+        </member>
+        <member name="M:mana.Data.Azure.Tables.GenericTableContext`1.GetFirst``1(System.Linq.IQueryable{``0})">
+            <summary>
+            Gets the first result of the specified query.
+            </summary>
+            <typeparam name="TResult">Result type that the query returns.</typeparam>
+            <param name="query">Query to execute.</param>
+            <returns>Returns the first query result.</returns>
+        </member>
+        <member name="M:mana.Data.Azure.Tables.GenericTableContext`1.GetSingle``1(System.Linq.IQueryable{``0})">
+            <summary>
+            Gets the single expected result of the specified query.
+            </summary>
+            <typeparam name="TResult">Result type that the query returns.</typeparam>
+            <param name="query">Query to execute.</param>
+            <returns>Returns the single query expected result.</returns>
+        </member>
+        <member name="M:mana.Data.Azure.Tables.GenericTableContext`1.GetByPartitionKey(System.String)">
+            <summary>
+            Gets the entities of the specified PartitionKey.
+            </summary>
+            <param name="partitionKey">Entity's Partition Key.</param>
+            <returns>Returns the entities with the specified PartitionKey.</returns>
+        </member>
+        <member name="M:mana.Data.Azure.Tables.GenericTableContext`1.GetAll">
+            <summary>
+            Gets all entities in this Azure Table.
+            </summary>
+            <returns>Returns all entities.</returns>
+        </member>
+        <member name="M:mana.Data.Azure.Tables.GenericTableContext`1.Update(`0)">
+            <summary>
+            Updates the specified entity.
+            </summary>
+            <param name="entity">Entity to update.</param>
+        </member>
+        <member name="M:mana.Data.Azure.Tables.GenericTableContext`1.Update(`0,System.Boolean)">
+            <summary>
+            Updates the specified entity. Specifies whether to skip the existence check for the specified entity.
+            </summary>
+            <param name="entity">Entity to update.</param>
+            <param name="skipExistenceCheck">Specifies to skip the entity's existence check or not.</param>
+        </member>
+        <member name="M:mana.Data.Azure.Tables.GenericTableContext`1.Delete(System.String,System.String)">
+            <summary>
+            Deletes the entity with the specified PartitionKey 
+            </summary>
+            <param name="partitionKey">Entity's PartitionKey to delete.</param>
+            <param name="rowKey">Entity's RowKey to delete</param>
+        </member>
+        <member name="M:mana.Data.Azure.Tables.GenericTableContext`1.Delete(`0)">
+            <summary>
+            Deletes the specified entity.
+            </summary>
+            <param name="entity">Entity to delete.</param>
+        </member>
+        <member name="M:mana.Data.Azure.Tables.GenericTableContext`1.DeleteInBatch(System.Linq.IQueryable{`0})">
+            <summary>
+            Deletes the resulting entities of the query execution in batch.
+            </summary>
+            <param name="query">Query to execute.</param>
+        </member>
+        <member name="M:mana.Data.Azure.Tables.GenericTableContext`1.DeleteInBatch(System.Collections.Generic.List{`0})">
+            <summary>
+            Deletes the specified entities in batch.
+            </summary>
+            <param name="entities"></param>
+        </member>
+        <member name="M:mana.Data.Azure.Tables.GenericTableContext`1.DeleteAll">
+            <summary>
+            Deletes all the entities in the Azure Table in batch.
+            </summary>
+        </member>
+        <member name="M:mana.Data.Azure.Tables.GenericTableContext`1.Count">
+            <summary>
+            Counts all entities in the Azure Table.
+            </summary>
+            <returns>Returns the entities count.</returns>
+        </member>
+        <member name="M:mana.Data.Azure.Tables.GenericTableContext`1.Count(System.Linq.IQueryable{`0})">
+            <summary>
+            Counts all resulting entities of the query execution.
+            </summary>
+            <param name="query">Query to execute.</param>
+            <returns>Returns the entities count.</returns>
+        </member>
+        <member name="M:mana.Data.Azure.Tables.GenericTableContext`1.Exists(System.String,System.String)">
+            <summary>
+            Indicates if an entity with the specified PartitionKey and RowKey exists.
+            </summary>
+            <param name="partitionKey">Entity's PartitionKey.</param>
+            <param name="rowKey">Entity's RowKey.</param>
+            <returns>Returns a boolean indicating if the entity exists or not.</returns>
+        </member>
+        <member name="M:mana.Data.Azure.Tables.GenericTableContext`1.Exists(System.Linq.IQueryable{`0})">
+            <summary>
+            Indicates if any resulting entity of the query execution exists.
+            </summary>
+            <param name="query">Query to execute.</param>
+            <returns>Returns a boolean indicating if any entity exists or not.</returns>
+        </member>
+        <member name="M:mana.Data.Azure.Tables.GenericTableContext`1.ResolveName(System.Type)">
+            <summary>
+            Internal method used by this context to resolve entity set name from the entity type.
+            </summary>
+            <param name="type"></param>
+            <returns>Returns the entity set name.</returns>
+        </member>
+        <member name="M:mana.Data.Azure.Tables.GenericTableContext`1.ResolveType(System.String)">
+            <summary>
+            Internal method used by this context to resolve the entity type from the entity set name.
+            </summary>
+            <param name="entitySetName"></param>
+            <returns>Returns the entity type.</returns>
+        </member>
+        <member name="M:mana.Data.Azure.Tables.GenericTableContext`1.ValidateEntity(`0)">
+            <summary>
+            Validates an entity.
+            </summary>
+            <param name="entity">Entity to validate.</param>
+        </member>
+        <member name="M:mana.Data.Azure.Tables.GenericTableContext`1.SaveChanges(System.Boolean)">
+            <summary>
+            Apply changes to the Azure Table.
+            </summary>
+            <param name="skipConsistency">Specifies whether to skip consistency check when applying changes or not.</param>
+        </member>
+        <member name="M:mana.Data.Azure.Tables.GenericTableContext`1.SaveChanges(System.Data.Services.Client.SaveChangesOptions,System.Boolean)">
+            <summary>
+            Apply changes to the Azure Table.
+            </summary>
+            <param name="options">Save changes options to apply.</param>
+            <param name="skipExistenceCheck">Specifies whether to skip consistency check when applying changes or not.</param>
+        </member>
+        <member name="M:mana.Data.Azure.Tables.GenericTableContext`1.ClearDeletedEntities">
+            <summary>
+            Removes all entities marked as "Deleted" from the internal context.
+            </summary>
+        </member>
+        <member name="M:mana.Data.Azure.Tables.GenericTableContext`1.ApplyOperation(`0,mana.Data.Azure.Tables.GenericTableContext{`0}.ContextOperation)">
+            <summary>
+            Applies the specified operation to the specified entity.
+            </summary>
+            <param name="entity">Entity to apply operation to.</param>
+            <param name="operation">Operation to apply.</param>
+        </member>
+        <member name="M:mana.Data.Azure.Tables.GenericTableContext`1.ApplyOperation(`0,mana.Data.Azure.Tables.GenericTableContext{`0}.ContextOperation,System.Boolean)">
+            <summary>
+            Applies the specified operation to the specified entity.
+            </summary>
+            <param name="entity">Entity to apply operation to.</param>
+            <param name="operation">Operation to apply.</param>
+            <param name="skipExistenceCheck">Specifies whether to skip consistency check when applying the operation.</param>
+        </member>
+        <member name="M:mana.Data.Azure.Tables.GenericTableContext`1.ApplyOperationInBatch(System.Collections.Generic.List{`0},mana.Data.Azure.Tables.GenericTableContext{`0}.ContextOperation)">
+            <summary>
+            Applies the specified operation to the specified entities in batch.
+            </summary>
+            <param name="entities">Entities to apply operation to.</param>
+            <param name="operation">Operation to apply.</param>
+        </member>
+        <member name="M:mana.Data.Azure.Tables.GenericTableContext`1.ApplyOperationInBatch(System.Collections.Generic.List{`0},mana.Data.Azure.Tables.GenericTableContext{`0}.ContextOperation,System.Boolean)">
+            <summary>
+            Applies the specified operation to the specified entities in batch.
+            </summary>
+            <param name="entities">Entities to apply operation to.</param>
+            <param name="operation">Operation to apply.</param>
+            <param name="skipExistenceCheck">Specifies whether to skip consistency check when applying the operation.</param>
+        </member>
+        <member name="M:mana.Data.Azure.Tables.GenericTableContext`1.AddOperation(`0,System.Boolean)">
+            <summary>
+            Add operation logic to apply to an entity.
+            </summary>
+            <param name="entity">Entity to apply operation to.</param>
+            <param name="skipExistenceCheck">Specifies whether to skip consistency check or not.</param>
+        </member>
+        <member name="M:mana.Data.Azure.Tables.GenericTableContext`1.UpdateOperation(`0,System.Boolean)">
+            <summary>
+            Update operation logic to apply to an entity.
+            </summary>
+            <param name="entity">Entity to apply operation to.</param>
+            <param name="skipExistenceCheck">Specifies whether to skip consistency check or not.</param>
+        </member>
+        <member name="M:mana.Data.Azure.Tables.GenericTableContext`1.DeleteOperation(`0,System.Boolean)">
+            <summary>
+            Delete operation logic to apply to an entity.
+            </summary>
+            <param name="entity">Entity to apply operation to.</param>
+            <param name="skipExistenceCheck">Specifies whether to skip consistency check or not.</param>
+        </member>
+        <member name="M:mana.Data.Azure.Tables.GenericTableContext`1.CreateInstanceOfEntity(System.String,System.String)">
+            <summary>
+            Creates an entity's instance with nothing but the PartitionKey and RowKey.
+            </summary>
+            <param name="partitionKey">Entity's PartitionKey.</param>
+            <param name="rowKey">Entity's RowKey.</param>
+            <returns>Returns the created entity's instance.</returns>
+        </member>
+        <member name="M:mana.Data.Azure.Tables.GenericTableContext`1.DetachEntityIfExists(`0)">
+            <summary>
+            Detaches the specified entity from the context.
+            </summary>
+            <param name="entity">Entity to detaches.</param>
+        </member>
+        <member name="M:mana.Data.Azure.Tables.GenericTableContext`1.ContextContainsEntity(`0)">
+            <summary>
+            Indicates whether the entity exists in the context or not.
+            </summary>
+            <param name="entity">Entity to lookup.</param>
+            <returns>Returns a boolean whether the entity exists in the context or not.</returns>
+        </member>
+        <member name="M:mana.Data.Azure.Tables.GenericTableContext`1.GetEntityInContext(`0,System.Boolean)">
+            <summary>
+            Gets the specified entity from the context.
+            </summary>
+            <param name="entity">Entity to find.</param>
+            <param name="findByKeys">Specifies whether to find by keys or not.</param>
+            <returns>Returns the entity from the context.</returns>
+        </member>
+        <member name="E:mana.Data.Azure.Tables.GenericTableContext`1.ChangesSaved">
+            <summary>
+            Raised when any change is saved in the context. Especially useful during batch operations.
+            </summary>
+        </member>
+        <member name="P:mana.Data.Azure.Tables.GenericTableContext`1.EntitySetName">
+            <summary>
+            Azure Table name.
+            </summary>
+        </member>
+        <member name="P:mana.Data.Azure.Tables.GenericTableContext`1.Entities">
+            <summary>
+            Represents the entities in a Azure Table in a query. All queries to this context MUST target this property.
+            </summary>
+        </member>
+        <member name="P:mana.Data.Azure.Tables.GenericTableContext`1.BatchSize">
+            <summary>
+            Gets or sets the number of entities sent in each batch call.
+            </summary>
+        </member>
+        <member name="P:mana.Data.Azure.Tables.GenericTableContext`1.RetryPolicy">
+            <summary>
+            Gets or sets the Retry Policy.
+            </summary>
+        </member>
+        <member name="P:mana.Data.Azure.Tables.GenericTableContextOperationEventArgs.OperationName">
+            <summary>
+            Performed operation to the saved entities.
+            </summary>
+        </member>
+        <member name="P:mana.Data.Azure.Tables.GenericTableContextOperationEventArgs.EntitiesSaved">
+            <summary>
+            Number of saved entities.
+            </summary>
+        </member>
+        <member name="P:mana.Data.Azure.Tables.GenericTableContextOperationEventArgs.TotalEntities">
+            <summary>
+            Number of total entities.
+            </summary>
+        </member>
+        <member name="M:mana.Data.SQL.SqlCmdSelect.SetPagination(System.Int32,System.Int32)">
+            <summary>
+            Sets the query's pagination data.
+            </summary>
+            <param name="startRowIndex">The initial row number to return (0-based number).</param>
+            <param name="maximumRows">The maximum rows number to return.</param>
+        </member>
+        <member name="M:mana.Data.SQL.SqlCmdSetExpression.AddParameter(System.Object)">
+            <summary>
+            Adds the parameter to the inner list and returns the parameter name.
+            </summary>
+            <param name="parameterValue"></param>
+            <returns></returns>
+        </member>
+        <member name="M:mana.Data.SQL.SqlCmdFieldsAndValuesExpression.AddParameter(System.Object)">
+            <summary>
+            Adds the parameter to the inner list and returns the parameter name.
+            </summary>
+            <param name="parameterValue"></param>
+            <returns></returns>
+        </member>
+        <member name="M:mana.Data.SQL.SqlCmdOrderByExpression.Add(mana.Data.SQL.Schema.SqlColumnSchema)">
+            <summary>
+            Adds a new order expression using the specified column.
+            </summary>
+            <param name="column">Column name.</param>
+        </member>
+        <member name="M:mana.Data.SQL.SqlCmdOrderByExpression.Add(mana.Data.SQL.Schema.SqlColumnSchema,System.Boolean)">
+            <summary>
+            Adds a new order expression using the specified column and direction.
+            </summary>
+            <param name="column">Column name.</param>
+            <param name="ascending">Order direction.</param>
+        </member>
+        <member name="M:mana.Data.SQL.SqlCmdOrderByExpression.Add(System.String)">
+            <summary>
+            Adds a new order expression.
+            </summary>
+            <param name="orderByExpression"></param>
+        </member>
+        <member name="M:mana.Data.SQL.SqlCmdOrderByExpression.Set(System.String)">
+            <summary>
+            Clears all the current order expressions and sets the specified order expression.
+            </summary>
+            <param name="orderByExpression"></param>
+        </member>
+        <member name="M:mana.Data.SQL.SqlCmdOrderByExpression.Clear">
+            <summary>
+            Clears all the order expressions.
+            </summary>
+        </member>
+        <member name="P:mana.Data.SQL.SqlCmdOrderByExpression.Expression">
+            <summary>
+            Order expression.
+            </summary>
+        </member>
+        <member name="M:mana.Data.SQL.Transaccion.Begin">
+            <summary>
+            Starts a Transaction using IsolationLevel = ReadCommited.
+            </summary>
+        </member>
+        <member name="M:mana.Data.SQL.Transaccion.GetGeneratedIdentity">
+            <summary>
+            Returns the last generated identity from the database (@@IDENTITY).
+            </summary>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

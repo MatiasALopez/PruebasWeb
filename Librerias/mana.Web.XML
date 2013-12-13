@@ -1,0 +1,96 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>mana.Web</name>
+    </assembly>
+    <members>
+        <member name="M:mana.Web.UI.PageBase.GetFromViewState``1(System.String)">
+            <summary>
+            Gets a strongly typed value from ViewState.
+            </summary>
+            <typeparam name="T">Value's type.</typeparam>
+            <param name="name">The value's name to get.</param>
+            <returns>The value stored in ViewState with the specified name.\n
+            If there's no value set with the specified name, it returns the default value for the specified type.</returns>
+        </member>
+        <member name="M:mana.Web.UI.PageBase.SetToViewState``1(System.String,``0)">
+            <summary>
+            Sets a strongly typed value to ViewState.
+            </summary>
+            <typeparam name="T">Value's type.</typeparam>
+            <param name="name">The value's name to set.</param>
+            <param name="value">The value to set in ViewState.</param>
+        </member>
+        <member name="M:mana.Web.UI.PageBase.SetAuthenticatedUserCookieAndRedirectToDefaultPage(System.String)">
+            <summary>
+            Stores a cookie for the authenticated user specified.
+            Creates a persistent cookie by default.
+            </summary>
+            <param name="username">The authenticated username.</param>
+        </member>
+        <member name="M:mana.Web.UI.PageBase.SetAuthenticatedUserCookieAndRedirectToDefaultPage(System.String,System.Boolean)">
+            <summary>
+            Stores a cookie for the authenticated user specified.
+            </summary>
+            <param name="username">The authenticated username.</param>
+            <param name="persistentCookie">Indicates wheter to create a persistent cookie or not.</param>
+        </member>
+        <member name="M:mana.Web.UI.PageBase.RedirectsToLoginPage">
+            <summary>
+            Redirects to Login page, keeping the existing QueryString.
+            </summary>
+        </member>
+        <member name="M:mana.Web.UI.PageBase.RedirectsToLoginPage(System.String)">
+            <summary>
+            Redirects to Login page, keeping the existing QueryString and adding extra values to it.
+            NOTE: The extra string works only for the Login page, it's not added to the Return url.
+            </summary>
+            <param name="extraQueryString"></param>
+        </member>
+        <member name="M:mana.Web.UI.PageBase.ShowMessage(System.Web.UI.WebControls.Label,System.String)">
+            <summary>
+            Shows a message in the specified Label Control.
+            </summary>
+            <param name="label">Label Control.</param>
+            <param name="message">Message to show.</param>
+        </member>
+        <member name="M:mana.Web.UI.PageBase.ShowMessage(System.Web.UI.WebControls.Label,System.String,System.String)">
+            <summary>
+            Shows a message in the specified Label Control.
+            </summary>
+            <param name="label">Label Control.</param>
+            <param name="message">Message to show.</param>
+            <param name="cssClass">Css class to apply to Label.</param>
+        </member>
+        <member name="M:mana.Web.UI.PageBase.ClearMessage(System.Web.UI.WebControls.Label)">
+            <summary>
+            Clears the message from the specified Label Control.
+            </summary>
+            <param name="label">Label Control.</param>
+        </member>
+        <member name="M:mana.Web.UI.PageBase.ShowFileDownloadDialog(System.String,System.IO.Stream)">
+            <summary>
+            Shows a file download dialog for the specified file.
+            NOTE: This method will ALWAYS throw an ThreadAbortedException which is normal (it works anyways), since it's rewriting the actual Response.
+            </summary>
+            <param name="fileName">File name.</param>
+            <param name="fileStream">File stream.</param>
+        </member>
+        <member name="M:mana.Web.UI.PageBase.ShowFileDownloadDialog(System.String,System.String)">
+            <summary>
+            Shows a file download dialog for the specified file.
+            NOTE: This method will ALWAYS throw an ThreadAbortedException which is normal (it works anyways), since it's rewriting the actual Response.
+            </summary>
+            <param name="fileName">File name.</param>
+            <param name="fileStream">File path.</param>
+        </member>
+        <member name="M:mana.Web.UI.PageBase.ShowFileDownloadDialog(System.String,System.Byte[])">
+            <summary>
+            Shows a file download dialog for the specified file.
+            NOTE: This method will ALWAYS throw an ThreadAbortedException which is normal (it works anyways), since it's rewriting the actual Response.
+            </summary>
+            <param name="fileName">File name.</param>
+            <param name="fileBytes">File bytes.</param>
+        </member>
+    </members>
+</doc>
